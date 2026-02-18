@@ -1,77 +1,70 @@
-function main(req, res, client) {
-  //  client.connect((err) => {
-  //     if (err) {
-  //         console.log(err);
-  //         res.status(400).send("Error while connecting to the database");
-  //         return;
-  //     }
+function main(req, res, client, appEnv) {
+	//  client.connect((err) => {
+	//     if (err) {
+	//         console.log(err);
+	//         res.status(400).send("Error while connecting to the database");
+	//         return;
+	//     }
+	// console.log(__dirname);
+	// console.log(appEnv);
+	let { first_name, mobile, email, role } = req.body;
 
-  let { first_name, mobile, email, role } = req.body;
+	client.query(
+		`SELECT user_name from users WHERE mobila = $1;`,
+		[mobile.trim()],
+		(err, data) => {
+			if (err) {
+				console.log(err);
+				// const response_obj = {
+				// 	suceess: false,
+				// 	data: null,
+				// 	err: err,
+				// 	err_id: "1000011",
+				// };
+				// res.status(400).send(response_obj);
+				// function (responseObject, errorStatus, responseCode, responseData, errorCode, errorMessage)
+				// appEnv.responseGenerator.sendResponse(res, false, null, err, "1000011", 400);
+				appEnv.responseGenerator.sendResponse(res, false, 400, null, err, appEnv.getCurrentLine());
+				return;
+			}
 
-  client.query(
-    `SELECT user_name from users WHERE mobile = $1;`,
-    [mobile.trim()],
-    (err, data) => {
-      if (err) {
-        console.log(err);
-        const response_obj = {
-          suceess: false,
-          data: null,
-          err: err,
-          err_id: "1000011",
-        };
-        res.status(400).send(response_obj);
-        return;
-      }
+			if (data.rows.length != 0) {
+				// const response_obj = {
+				// 	suceess: true,
+				// 	data: {
+				// 		msg: "User Already Exists. !!",
+				// 	},
+				// 	err: err,
+				// 	err_id: null,
+				// };
+				// res.status(200).send(response_obj);
+				appEnv.responseGenerator.sendResponse(res, true, 200, { msg: "User Already Exists. !!" }, null, null);
+				return;
+			}
 
-      if (data.rows.length != 0) {
-        const response_obj = {
-          suceess: true,
-          data: {
-            msg: "User Already Exists. !!",
-          },
-          err: err,
-          err_id: null,
-        };
-        res.status(200).send(response_obj);
-        return;
-      }
+			const insertQuery = `
+				INSERT INTO users (user_name, mobile, email, role, password)
+				VALUES ($1, $2, $3, $4, $5) Returning id, user_name, mobile, email, role;
+			`;
 
-      const insertQuery = `
-      INSERT INTO users (user_name, mobile, email, role, password)
-      VALUES ($1, $2, $3, $4, $5) Returning id, user_name, mobile, email, role;
-    `;
+			let user_name = first_name.trim() + "@" + mobile.trim();
+			let password = first_name.trim() + "@123";
+			let values = [user_name, mobile.trim(), email.trim(), role, password];
 
-      let user_name = first_name.trim() + "@" + mobile.trim();
-      let password = first_name.trim() + "@123";
-      let values = [user_name, mobile.trim(), email.trim(), role, password];
-
-      client.query(insertQuery, values, (err, data) => {
-        if (err) {
-          console.log(err);
-          const response_obj = {
-            suceess: false,
-            data: null,
-            err: err,
-            err_id: "1000049",
-          };
-          res.status(400).send(response_obj);
-          return;
-        }
-        console.log("Data inserted successfully");
-        const response_obj = {
-          suceess: true,
-          data: data.rows[0],
-          err: err,
-          err_id: null,
-        };
-        res.status(200).send(response_obj);
-        return;
-      });
-    }
-  );
+			client.query(insertQuery, values, (err, data) => {
+				if (err) {
+					console.log(err);
+					appEnv.responseGenerator.sendResponse(res, false, 40, null, "1000051", err);
+					return;
+				}
+				console.log("Data inserted successfully");
+				appEnv.responseGenerator.sendResponse(res, true, 200, data.rows[0], null, null);
+				return;
+			});
+		}
+	);
 }
 
 module.exports = {
-  main: main,
+	main: main,
 };

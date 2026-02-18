@@ -1,27 +1,30 @@
 console.log("Hello Buddy");
 const express = require('express')
 const app = express()
-
+const appEnv = require('./src/base/appEnvironmentBuilder').getAppEnvironment(__dirname);
+// console.log("App Env: " + appEnv);
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+	res.send('Hello World!')
 })
 
 app.get('/query/', (req, res) => {
-  res.send(req.query.name)
+	res.send(req.query.name)
 })
 
 app.get('/param/:id/:name/:depart', (req, res) => {
-  res.send(req.params)
+	res.send(req.params)
 })
 
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
+
 app.get('/body/', (req, res) => {
-  res.send(req.body)
+	res.send(req.body)
 })
-require('./router')(app);
+
+require('./router')(app, appEnv);
 
 // const { MongoClient, ObjectId } = require('mongodb');
 
@@ -46,5 +49,5 @@ require('./router')(app);
 
 
 app.listen(9998, () => {
-    console.log(`Server is running on port 9998`)
-  })
+	console.log(`Server is running on port 9998`)
+})

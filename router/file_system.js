@@ -1,16 +1,16 @@
 
-module.exports = function(app, client){
-    let currPath = "/file_system";
+module.exports = function (app, appEnv, client) {
+	let currPath = "/file_system";
 
 
-    const multer = require('multer');
+	const multer = require('multer');
 	const fs = require('fs');
 	const path = require('path');
 
-    //Creates uploads folder
+	//Creates uploads folder
 	const dir = './uploads';
 	if (!fs.existsSync(dir)) {
-  		fs.mkdirSync(dir);
+		fs.mkdirSync(dir);
 	}
 
 	// Configure Multer storage
@@ -28,88 +28,88 @@ module.exports = function(app, client){
 
 	const upload = multer({ storage: storage });
 
-    // Post URLs
+	// Post URLs
 
-    // URL: /user/api/v1/write_file
-    app.post(currPath + "/write_file", function(req,res){
+	// URL: /user/api/v1/write_file
+	app.post(currPath + "/write_file", function (req, res) {
 
-        let urlLogicOBJ = require(__dirname + "/../src/file_system/write_file.js");
-        // require("../src/file_system/write_file")
-        urlLogicOBJ.main(req, res, client);
-        
-    });
+		let urlLogicOBJ = require(__dirname + "/../src/file_system/write_file.js");
+		// require("../src/file_system/write_file")
+		urlLogicOBJ.main(req, res, client);
 
-    // URL: /user/api/v1/write_file_async
-    app.post(currPath + "/write_file_async", function(req,res){
+	});
 
-        let urlLogicOBJ = require(__dirname + "/../src/file_system/write_file_async.js");
-        // require("../src/file_system/write_file_async)
-        urlLogicOBJ.main(req, res, client);
-        
-    });
+	// URL: /user/api/v1/write_file_async
+	app.post(currPath + "/write_file_async", function (req, res) {
 
-     // URL: /user/api/v1/write_file_stream
-     app.post(currPath + "/write_file_stream", function(req,res){
+		let urlLogicOBJ = require(__dirname + "/../src/file_system/write_file_async.js");
+		// require("../src/file_system/write_file_async)
+		urlLogicOBJ.main(req, res, client);
 
-        let urlLogicOBJ = require(__dirname + "/../src/file_system/write_file_stream.js");
-        // require("../src/file_system/write_file_stream)
-        urlLogicOBJ.main(req, res, client);
-        
-    });    
-    
-    //upload.array for multiple uploads
-    //upload.single for single uploads
-    // URL: /file_system/upload_document/
+	});
+
+	// URL: /user/api/v1/write_file_stream
+	app.post(currPath + "/write_file_stream", function (req, res) {
+
+		let urlLogicOBJ = require(__dirname + "/../src/file_system/write_file_stream.js");
+		// require("../src/file_system/write_file_stream)
+		urlLogicOBJ.main(req, res, client);
+
+	});
+
+	//upload.array for multiple uploads
+	//upload.single for single uploads
+	// URL: /file_system/upload_document/
 	app.post(currPath + "/upload_document/", upload.single('file'), function (req, res) {
 		let urlLogicOBJ = require(__dirname + "/../src/file_system/upload_document.js");//file path
 		urlLogicOBJ.main(req, res, client);
 	});
-    
-    // Get URLs
 
-    // URL: /user/api/v1/read_file
-    app.get(currPath + "/read_file", function(req,res){
+	// Get URLs
 
-        let urlLogicOBJ = require(__dirname + "/../src/file_system/read_file.js");
-        // require("../src/file_system/read_file)
-        urlLogicOBJ.main(req, res, client);       
-    });
+	// URL: /user/api/v1/read_file
+	app.get(currPath + "/read_file", function (req, res) {
 
-    // URL: /user/api/v1/read_file_async
-    app.get(currPath + "/read_file_async", function(req,res){
+		let urlLogicOBJ = require(__dirname + "/../src/file_system/read_file.js");
+		// require("../src/file_system/read_file)
+		urlLogicOBJ.main(req, res, client);
+	});
 
-        let urlLogicOBJ = require(__dirname + "/../src/file_system/read_file_async.js");
-        // require("../src/file_system/read_file_async)
-        urlLogicOBJ.main(req, res, client);       
-    });
+	// URL: /user/api/v1/read_file_async
+	app.get(currPath + "/read_file_async", function (req, res) {
 
-    // URL: /user/api/v1/read_file_stream
-    app.get(currPath + "/read_file_stream", function(req,res){
+		let urlLogicOBJ = require(__dirname + "/../src/file_system/read_file_async.js");
+		// require("../src/file_system/read_file_async)
+		urlLogicOBJ.main(req, res, client);
+	});
 
-        let urlLogicOBJ = require(__dirname + "/../src/file_system/read_file_stream.js");
-        // require("../src/file_system/read_file_stream)
-        urlLogicOBJ.main(req, res, client);
-        
-    });
+	// URL: /user/api/v1/read_file_stream
+	app.get(currPath + "/read_file_stream", function (req, res) {
 
-    // Put URLs
-    
-    // URL: /user/api/v1/append_file
-    app.put(currPath + "/append_file", function(req,res){
+		let urlLogicOBJ = require(__dirname + "/../src/file_system/read_file_stream.js");
+		// require("../src/file_system/read_file_stream)
+		urlLogicOBJ.main(req, res, client);
 
-        let urlLogicOBJ = require(__dirname + "/../src/file_system/append_file.js");
-        // require("../src/file_system/append_file)
-        urlLogicOBJ.main(req, res, client);
-        
-    });
+	});
 
-    // URL: /user/api/v1/append_file_async
-    app.put(currPath + "/append_file_async", function(req,res){
+	// Put URLs
 
-        let urlLogicOBJ = require(__dirname + "/../src/file_system/append_file_async.js");
-        // require("../src/file_system/append_file_async)
-        urlLogicOBJ.main(req, res, client);
-        
-    });
+	// URL: /user/api/v1/append_file
+	app.put(currPath + "/append_file", function (req, res) {
+
+		let urlLogicOBJ = require(__dirname + "/../src/file_system/append_file.js");
+		// require("../src/file_system/append_file)
+		urlLogicOBJ.main(req, res, client);
+
+	});
+
+	// URL: /user/api/v1/append_file_async
+	app.put(currPath + "/append_file_async", function (req, res) {
+
+		let urlLogicOBJ = require(__dirname + "/../src/file_system/append_file_async.js");
+		// require("../src/file_system/append_file_async)
+		urlLogicOBJ.main(req, res, client);
+
+	});
 
 }
